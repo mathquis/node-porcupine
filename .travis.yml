@@ -1,0 +1,36 @@
+language: node_js
+node_js:
+- 13
+jobs:
+  include:
+    - os: linux
+      arch: amd64
+    - os: linux
+      arch: arm64
+    - os: windows
+      arch: amd64
+compiler: gcc
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install libblas-dev
+- export PATH=./node_modules/.bin/:$PATH
+- npm install node-gyp -g
+- npm install node-pre-gyp node-pre-gyp-github
+- PUBLISH_BINARY=true
+- if [[ "$TRAVIS_TAG" == "" ]]; then PUBLISH_BINARY=false; fi;
+- echo "Publish binary = $PUBLISH_BINARY"
+install:
+- node-pre-gyp configure build
+before_script:
+- if [[ $PUBLISH_BINARY == true ]]; then node-pre-gyp package; fi;
+- if [[ $PUBLISH_BINARY == true ]]; then node-pre-gyp-github publish --release; fi;
+- node-pre-gyp clean
+- node-gyp clean
+script:
+- INSTALL_RESULT=0
+- if [[ $PUBLISH_BINARY == true ]]; then INSTALL_RESULT=$(npm install --falback-to-build=false > /dev/null)$? || true; fi;
+- echo "Install result = $INSTALL_RESULT"
+- if [[ $INSTALL_RESULT != 0 ]]; then echo "returned $INSTALL_RESULT"; node-pre-gyp-github unpublish; false; fi;
+- node-pre-gyp clean
+after_success:
+- node-pre-gyp-github info
