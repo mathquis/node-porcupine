@@ -1,6 +1,6 @@
 {
   "name": "@mathquis/node-porcupine",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "Node.js bindings for Porcupine hotword detection",
   "main": "lib/index.js",
   "gypfile": true,
@@ -32,8 +32,7 @@
   "dependencies": {
     "block-stream2": "^2.0.0",
     "node-addon-api": "^3.0.0",
-    "node-pre-gyp": "^0.14.0",
-    "wavefile": "^11.0.0"
+    "node-pre-gyp": "^0.14.0"
   },
   "homepage": "https://github.com/mathquis/node-porcupine#readme"
 }
